@@ -51,7 +51,7 @@
 <!-- ── Feedback panel ── -->
 <div id="fb-panel">
   <h3>Rate QuickCeph</h3>
-  <p>Help us improve QuickCephTool</p>
+  <p>Your feedback is important ♥</p>
   <div id="fb-stars">
     <span class="star" data-v="5">★</span>
     <span class="star" data-v="4">★</span>
@@ -59,7 +59,6 @@
     <span class="star" data-v="2">★</span>
     <span class="star" data-v="1">★</span>
   </div>
-  <input id="fb-name" class="fb-input" type="text" placeholder="Your name">
   <input id="fb-email" class="fb-input" type="email" placeholder="Your email">
   <textarea id="fb-msg" class="fb-input" placeholder="Your feedback..."></textarea>
   <button id="fb-send" onclick="sendFeedback()">Send Feedback</button>
@@ -87,7 +86,6 @@
   });
 
   function sendFeedback(){
-    var name  = document.getElementById('fb-name').value.trim();
     var email = document.getElementById('fb-email').value.trim();
     var msg   = document.getElementById('fb-msg').value.trim();
     if(!msg){ alert('Please write your feedback first.'); return; }
@@ -96,10 +94,11 @@
     btn.disabled = true;
     var ratingText = selectedRating ? selectedRating + '/5 stars' : 'No rating';
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      name:    name  || 'Anonymous',
-      email:   email || 'Not provided',
-      message: msg,
-      title:   'App Feedback — Rating: ' + ratingText
+      email:    email || 'Not provided',
+      reply_to: email || '',
+      message:  'Rating: ' + ratingText + '\n\n' + msg,
+      rating:   ratingText,
+      title:    'App Feedback'
     }).then(function(){
       btn.style.display = 'none';
       document.getElementById('fb-thanks').style.display = 'block';
@@ -108,7 +107,6 @@
         btn.style.display = 'block';
         btn.textContent = 'Send Feedback';
         btn.disabled = false;
-        document.getElementById('fb-name').value  = '';
         document.getElementById('fb-email').value = '';
         document.getElementById('fb-msg').value   = '';
         document.getElementById('fb-thanks').style.display = 'none';
