@@ -327,6 +327,9 @@
   }
   #fb-send:hover{opacity:.85;}
   #fb-thanks{display:none;text-align:center;font-size:.7rem;color:#3bb8f0;padding:10px 0;}
+  #fb-stars{display:flex;gap:4px;margin-bottom:8px;}
+  .star{font-size:1.4rem;color:#444;cursor:pointer;transition:color .15s;}
+  .star:hover,.star.active{color:#f5c518;}
 
   /* ── Scale banner (in results panel) ── */
   .scale-banner{margin:4px 15px 0;padding:6px 10px;border-radius:5px;font-size:.61rem;line-height:1.5;}

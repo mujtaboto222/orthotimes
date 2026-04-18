@@ -45,13 +45,20 @@
 <!-- ── Feedback button ── -->
 <button id="fb-btn" onclick="document.getElementById('fb-panel').classList.toggle('open')">
   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-  Feedback
+  Rate QuickCeph
 </button>
 
 <!-- ── Feedback panel ── -->
 <div id="fb-panel">
-  <h3>Share your feedback</h3>
+  <h3>Rate QuickCeph</h3>
   <p>Help us improve QuickCephTool</p>
+  <div id="fb-stars">
+    <span class="star" data-v="1">★</span>
+    <span class="star" data-v="2">★</span>
+    <span class="star" data-v="3">★</span>
+    <span class="star" data-v="4">★</span>
+    <span class="star" data-v="5">★</span>
+  </div>
   <input id="fb-name" class="fb-input" type="text" placeholder="Your name">
   <input id="fb-email" class="fb-input" type="email" placeholder="Your email">
   <textarea id="fb-msg" class="fb-input" placeholder="Your feedback..."></textarea>
@@ -68,6 +75,17 @@
 
   emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
+  // ── Star rating ──
+  var selectedRating = 0;
+  document.querySelectorAll('.star').forEach(function(s){
+    s.addEventListener('click', function(){
+      selectedRating = parseInt(s.getAttribute('data-v'));
+      document.querySelectorAll('.star').forEach(function(x){
+        x.classList.toggle('active', parseInt(x.getAttribute('data-v')) <= selectedRating);
+      });
+    });
+  });
+
   function sendFeedback(){
     var name  = document.getElementById('fb-name').value.trim();
     var email = document.getElementById('fb-email').value.trim();
@@ -76,11 +94,12 @@
     var btn = document.getElementById('fb-send');
     btn.textContent = 'Sending...';
     btn.disabled = true;
+    var ratingText = selectedRating ? selectedRating + '/5 stars' : 'No rating';
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       name:    name  || 'Anonymous',
       email:   email || 'Not provided',
       message: msg,
-      title:   'App Feedback'
+      title:   'App Feedback — Rating: ' + ratingText
     }).then(function(){
       btn.style.display = 'none';
       document.getElementById('fb-thanks').style.display = 'block';
@@ -93,6 +112,8 @@
         document.getElementById('fb-email').value = '';
         document.getElementById('fb-msg').value   = '';
         document.getElementById('fb-thanks').style.display = 'none';
+        selectedRating = 0;
+        document.querySelectorAll('.star').forEach(function(x){ x.classList.remove('active'); });
       }, 2500);
     }, function(err){
       btn.textContent = 'Send Feedback';
