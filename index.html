@@ -61,6 +61,7 @@
   </div>
   <input id="fb-name" class="fb-input" type="text" placeholder="Your name">
   <input id="fb-email" class="fb-input" type="email" placeholder="Your email">
+  <div id="fb-email-err" style="display:none;color:#ff5a5a;font-size:.6rem;margin-top:-4px;">email required</div>
   <textarea id="fb-msg" class="fb-input" placeholder="Your feedback..."></textarea>
   <button id="fb-send" onclick="sendFeedback()">Send Feedback</button>
   <div id="fb-thanks">Thank you for your feedback! ✓</div>
@@ -90,11 +91,13 @@
     var name  = document.getElementById('fb-name').value.trim();
     var email = document.getElementById('fb-email').value.trim();
     var msg   = document.getElementById('fb-msg').value.trim();
+    var emailErr = document.getElementById('fb-email-err');
     if(!email || !/^\S+@\S+\.\S+$/.test(email)){
-      alert('Please write your email so we can get back to you.');
+      emailErr.style.display = 'block';
       document.getElementById('fb-email').focus();
       return;
     }
+    emailErr.style.display = 'none';
     if(!msg){ alert('Please write your feedback first.'); return; }
     var btn = document.getElementById('fb-send');
     btn.textContent = 'Sending...';
