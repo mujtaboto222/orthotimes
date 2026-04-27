@@ -669,7 +669,7 @@ function markPlaced(id){
   document.getElementById('lmi-'+id)?.classList.add('placed');
   updateProg();updateHdrHint();
   // Auto-fit occlusal plane when occlusal landmarks change
-  if(['U6','L6','U4','L4','L1tip'].includes(id)) fitOccPlane();
+  if(['U6','L6','U4','L4','U1tip','L1tip'].includes(id)) fitOccPlane();
 }
 
 // Fit occPlane through occlusal landmarks.
@@ -692,16 +692,20 @@ function fitOccPlane(){
     y: postPts.reduce((s,pt)=>s+pt.y,0)/postPts.length
   };
 
-  // Anterior: prefer L1tip, fallback to premolar average
+  // Anterior: midpoint of U1tip and L1tip, fallback to premolar average
+  const antPts = [p.U1tip, p.L1tip].filter(Boolean);
   let ant = null;
-  if(p.L1tip){
-    ant = {x: p.L1tip.x, y: p.L1tip.y};
-  } else {
-    const antPts = [p.U4, p.L4].filter(Boolean);
-    if(antPts.length === 0) return;
+  if(antPts.length > 0){
     ant = {
       x: antPts.reduce((s,pt)=>s+pt.x,0)/antPts.length,
       y: antPts.reduce((s,pt)=>s+pt.y,0)/antPts.length
+    };
+  } else {
+    const premPts = [p.U4, p.L4].filter(Boolean);
+    if(premPts.length === 0) return;
+    ant = {
+      x: premPts.reduce((s,pt)=>s+pt.x,0)/premPts.length,
+      y: premPts.reduce((s,pt)=>s+pt.y,0)/premPts.length
     };
   }
 
@@ -773,6 +777,8 @@ function loadImg(file){
       };
       document.getElementById('analyse-btn').disabled = false;
       setActive(LM[0].id);
+      // Auto-start AI detection as soon as the image is ready
+      document.getElementById('ai-detect-btn').click();
     };
     imgEl.src = ev.target.result;
   };
@@ -1476,6 +1482,7 @@ modeMenu.querySelectorAll('.mode-item').forEach(item => {
       currentMode === 'mcnamara' ? 'McNamara Analysis' :
       currentMode === 'downs'    ? 'Downs Analysis' :
       currentMode === 'steiner'  ? 'Steiner Analysis' :
+      currentMode === 'jarabak'  ? 'Jarabak Analysis' :
       'Eastman Analysis';
     modeMenu.classList.remove('open');
     // Auto re-analyse if any landmarks are placed
@@ -1516,6 +1523,8 @@ document.getElementById('analyse-btn').addEventListener('click',()=>{
       ? `<span class="mode-chip-downs">Downs Analysis</span>`
       : currentMode === 'steiner'
       ? `<span class="mode-chip-steiner">Steiner Analysis</span>`
+      : currentMode === 'jarabak'
+      ? `<span class="mode-chip-jarabak">Jarabak Analysis</span>`
       : `<span class="mode-chip-eastman">Eastman Analysis</span>`;
   body.appendChild(modeBadge);
 
@@ -1536,6 +1545,7 @@ document.getElementById('analyse-btn').addEventListener('click',()=>{
     currentMode === 'mcnamara' ? MEAS_MCNAMARA :
     currentMode === 'downs'    ? MEAS_DOWNS :
     currentMode === 'steiner'  ? MEAS_STEINER :
+    currentMode === 'jarabak'  ? MEAS_JARABAK :
     MEAS;
 
   let cur = '';
@@ -1658,12 +1668,14 @@ document.getElementById('export-btn').addEventListener('click', async () => {
     currentMode === 'mcnamara' ? 'McNamara Analysis' :
     currentMode === 'downs'    ? 'Downs Analysis' :
     currentMode === 'steiner'  ? 'Steiner Analysis' :
+    currentMode === 'jarabak'  ? 'Jarabak Analysis' :
     'Eastman Analysis';
   const badgeColor =
     currentMode === 'key'      ? CLR.accent :
     currentMode === 'mcnamara' ? CLR.purple :
     currentMode === 'downs'    ? CLR.warn :
     currentMode === 'steiner'  ? [80,200,120] :
+    currentMode === 'jarabak'  ? [232,192,108] :
     CLR.green;
   doc.setFontSize(7.5);
   doc.setFont('helvetica','bold');
@@ -1870,6 +1882,7 @@ document.getElementById('export-btn').addEventListener('click', async () => {
     currentMode === 'mcnamara' ? MEAS_MCNAMARA :
     currentMode === 'downs'    ? MEAS_DOWNS :
     currentMode === 'steiner'  ? MEAS_STEINER :
+    currentMode === 'jarabak'  ? MEAS_JARABAK :
     MEAS;
 
   let curS = '';
