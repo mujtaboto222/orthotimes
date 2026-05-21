@@ -655,3 +655,17 @@
 #header-icon{height:28px;width:auto;object-fit:contain;}
 #header-pixel{font-family:'Raleway',sans-serif;font-weight:300;font-size:1.45rem;color:#3bb8f0;letter-spacing:-.01em;line-height:1;}
 #ai-qc-label{width:48px !important;height:48px !important;object-fit:contain;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:.85;}
+
+/* ── AI disclaimer toast ── */
+#ai-disclaimer-toast{
+  position:fixed;top:60px;right:16px;z-index:9999;
+  background:var(--surface);
+  border:1px solid rgba(59,184,240,.3);
+  color:var(--muted);
+  font-family:'Inter',sans-serif;font-size:.62rem;font-weight:500;
+  padding:7px 14px;border-radius:8px;
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+  pointer-events:none;
+  transition:opacity .4s ease;
+}
+#ai-disclaimer-toast.hide{ opacity:0; }
